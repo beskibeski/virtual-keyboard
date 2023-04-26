@@ -1,0 +1,19 @@
+:root {
+  --main-bg-color: #000000;
+  --main-txt-color: #ffffff;
+  --letter-size: 1.5rem;
+}
+  
+.keyboard__small-key{
+  width: 50px;
+  height: 50px;
+  background-color:var(--main-bg-color);    
+  display: flex;            
+}
+
+.keyboard__letter {
+  margin: auto; 
+  align-self: center;
+  color: var(--main-txt-color);
+  font-size: var(--letter-size);  
+}
