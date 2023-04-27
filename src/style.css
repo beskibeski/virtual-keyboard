@@ -1,19 +1,73 @@
 :root {
   --main-bg-color: #000000;
+  --second-bg-color: #6a6a6a;
   --main-txt-color: #ffffff;
-  --letter-size: 1.5rem;
+  --second-txt-color: #6a6a6a;
+  --letter-size: 1.3rem;
 }
-  
-.keyboard__small-key{
-  width: 50px;
+
+.body{
+  margin: auto;
+  display: flex;
+  flex-direction: column;  
+  justify-content: center;
+  gap: 10px;
+}
+
+.keyboard{
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;    
+} 
+
+.keyboard__text-area{
+  display: block;
+  width: 40vw; 
+  margin-top: 20px;
+  margin: auto;  
+}
+
+.keyboard__row{
+  display: inline-flex;
+  background-color: var(--second-bg-color); 
+}
+
+.keyboard__button{
+  color: var(--main-txt-color);
+  margin: 5px;
+  min-width: 50px;
   height: 50px;
-  background-color:var(--main-bg-color);    
-  display: flex;            
+  background-color: var(--main-bg-color);    
+  display: flex;
+  cursor: pointer;             
 }
+
+.keyboard__button:hover{
+  color: var(--second-txt-color);
+  transition: all .3s;    
+}
+
 
 .keyboard__letter {
   margin: auto; 
-  align-self: center;
-  color: var(--main-txt-color);
-  font-size: var(--letter-size);  
+  align-self: center; 
+  font-size: var(--letter-size);   
+}
+
+.keyboard__space_button {
+  min-width: 350px;
+}
+
+.keyboard__shift_button,
+.keyboard__backspace_button,
+.keyboard__caps-lock_button {
+  min-width: 110.5px;
+}
+
+.keyboard__enter_button {
+  min-width: 110px;
+}
+
+.keyboard__tab_button {
+  min-width: 50.5px;
 }
