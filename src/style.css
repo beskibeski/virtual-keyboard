@@ -6,10 +6,12 @@
   --active-shadow-color: #4d44a0;
   --main-txt-color:#a5a5a5 ;
   --second-txt-color: #ffffff;
+  --active-txt-color: green;
   --letter-size: 1.3rem;
+  --text-size: 1.3rem;
 }
 
-.body{
+.body {
   margin: auto;
   display: flex;
   flex-direction: column;  
@@ -17,25 +19,32 @@
   gap: 10px;
 }
 
-.keyboard{
+.keyboard {
   display: inline-flex;
   flex-direction: column;
   align-items: center;    
 } 
 
-.keyboard__text-area{
+.keyboard__text-area {
   display: block;
   width: 40vw; 
   margin-top: 20px;
-  margin: auto;  
+  margin: auto;
+  font-size: var(--letter-size);  
 }
 
-.keyboard__row{
+.keyboard__help-text{
+  margin: auto;
+  margin-top: 30px;
+  font-size: var(--letter-size);
+}
+
+.keyboard__row {
   display: inline-flex;
   background-color: var(--second-bg-color); 
 }
 
-.keyboard__button{
+.keyboard__button {
   color: var(--main-txt-color);
   margin: 5px;
   min-width: 50px;
@@ -53,7 +62,7 @@
 }
 
 .keyboard__space_button {
-  min-width: 350px;
+  min-width: 410px;
 }
 
 .keyboard__backspace_button,
@@ -84,4 +93,10 @@
   box-shadow: 2px 2px 2px var(--active-shadow-color);
   color: var(--main-bg-color);  
   transition: all .3s;  
+}
+
+.keyboard__button_active:hover{
+  background-color: var(--active-bg-color);
+  box-shadow: 2px 2px 2px var(--active-shadow-color);
+  color: var(--main-bg-color);
 }

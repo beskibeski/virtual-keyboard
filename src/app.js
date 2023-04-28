@@ -5,22 +5,24 @@ const firstRowOfSymbols = ["`","1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
 const secondRowOfSymbols = ["Tab","Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\", "DEL"];
 const thirdRowOfSymbols = ["Caps lock","A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "ENTER"];
 const fourthRowOfSymbols = ["Shift","Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Up", "Shift"];
-const fifthRowOfSymbols = ["Ctrl","Win", "Alt", "Space", "Alt", "Ctrl", "Left", "Down", "Right", "En\nRu"];
+const fifthRowOfSymbols = ["Ctrl","Win", "Alt", "Space", "Alt", "Left", "Down", "Right", "Ctrl"];
 
-//Create keyboard with textarea
+//Create keyboard with textarea and help text
 
 document.body.className = "body";
 const textArea = document.createElement("textarea");
 textArea.className = "keyboard__text-area";
 document.body.prepend(textArea);
 textArea.setAttribute("rows","5");
-textArea.focus();
 const keyboard = document.createElement("div");
 keyboard.className = "keyboard"; 
 document.body.append(keyboard);
-
-//Create keyboard textarea
-
+const helpText = document.createElement("div");
+helpText.className = "keyboard__help-text";
+document.body.append(helpText);
+helpText.innerText = "Windows keyboard. Switch language by Shift + Alt";
+textArea.focus();
+let isCapsLock = false;
 
 //Create keyboard rows
 
@@ -147,7 +149,7 @@ createDesignOfButtons();
 
 //Create physical keyboard events
 
-function addButtonsClickHandler() {
+function addPhysicalKeyboardButtonsClickHandler() {
   document.addEventListener('keydown', (e) => {
     textArea.focus();
     switch(e.code){
@@ -239,7 +241,7 @@ function addButtonsClickHandler() {
         buttons[28].classList.add("keyboard__button_active");
       break;
       case "CapsLock":                
-        buttons[29].classList.add("keyboard__button_active");
+        buttons[29].classList.add("keyboard__button_active");       
       break;
       case "KeyA":                
         buttons[30].classList.add("keyboard__button_active");
@@ -313,7 +315,7 @@ function addButtonsClickHandler() {
       case "ArrowUp":                
         buttons[53].classList.add("keyboard__button_active");
       break;
-      case "RightShift":                
+      case "ShiftRight":                
         buttons[54].classList.add("keyboard__button_active");
       break;
       case "ControlLeft":                
@@ -330,17 +332,17 @@ function addButtonsClickHandler() {
       break;
       case "AltRight":                
         buttons[59].classList.add("keyboard__button_active");
-      break;
-      case "ControlRight":                
+      break;      
+      case "ArrowLeft":                
         buttons[60].classList.add("keyboard__button_active");
       break;
-      case "ArrowLeft":                
+      case "ArrowDown":                
         buttons[61].classList.add("keyboard__button_active");
       break;
-      case "ArrowDown":                
+      case "ArrowRight":                
         buttons[62].classList.add("keyboard__button_active");
       break;
-      case "ArrowRight":                
+      case "ControlRight":                
         buttons[63].classList.add("keyboard__button_active");
       break;
     }  
@@ -437,6 +439,7 @@ function addButtonsClickHandler() {
       break;
       case "CapsLock":                
         buttons[29].classList.remove("keyboard__button_active");
+        makeCapsLockActive();
       break;
       case "KeyA":                
         buttons[30].classList.remove("keyboard__button_active");
@@ -510,7 +513,7 @@ function addButtonsClickHandler() {
       case "ArrowUp":                
         buttons[53].classList.remove("keyboard__button_active");
       break;
-      case "RightShift":                
+      case "ShiftRight":                
         buttons[54].classList.remove("keyboard__button_active");
       break;
       case "ControlLeft":                
@@ -527,21 +530,509 @@ function addButtonsClickHandler() {
       break;
       case "AltRight":                
         buttons[59].classList.remove("keyboard__button_active");
-      break;
-      case "ControlRight":                
+      break;      
+      case "ArrowLeft":                
         buttons[60].classList.remove("keyboard__button_active");
       break;
-      case "ArrowLeft":                
+      case "ArrowDown":                
         buttons[61].classList.remove("keyboard__button_active");
       break;
-      case "ArrowDown":                
+      case "ArrowRight":                
         buttons[62].classList.remove("keyboard__button_active");
       break;
-      case "ArrowRight":                
+      case "ControlRight":                
         buttons[63].classList.remove("keyboard__button_active");
       break;
     }  
   });
 }
 
-addButtonsClickHandler();
+addPhysicalKeyboardButtonsClickHandler();
+
+//Create virtual keyboard click handler
+
+function addVirtualKeyboardButtonsClickHandler() { 
+  buttons.forEach(element => {    
+    element.addEventListener("mousedown", (e) => {      
+      onMouseDown(element, 0, "`");
+      return false;
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 1, "1");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 2, "2");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 3, "3");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 4, "4");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 5, "5");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 6, "6");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 7, "7");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 8, "8");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 9, "9");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 10, "0");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 11, "-");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 12, "=");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 13, "Backspace");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 0, "`");      
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 0, "`");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 1, "1");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 1, "1");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 2, "2");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 2, "2");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 3, "3");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 3, "3");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 4, "4");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 4, "4");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 5, "5");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 5, "5");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 6, "6");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 6, "6");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 7, "7");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 7, "7");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 8, "8");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 8, "8");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 9, "9");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 9, "9");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 10, "0");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 10, "0");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 11, "-");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 11, "-");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 12, "=");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 12, "=");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 13, "Backspace");
+    })
+    element.addEventListener("mouseleave", (e) => {
+      onMouseUp(element, 13, "Backspace");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 14, "Tab");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 15, "Q");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 16, "W");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 17, "E");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 18, "R");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 19, "T");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 20, "Y");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 21, "U");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 22, "I");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 23, "O");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 24, "P");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 25, "[");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 26, "]");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 27, "\\");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 28, "DEL");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 14, "Tab");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 15, "Q");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 16, "W");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 17, "E");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 18, "R");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 19, "T");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 20, "Y");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 21, "U");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 22, "I");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 23, "O");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 24, "P");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 25, "[");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 26, "]");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 27, "\\");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 28, "DEL");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 29, "Caps lock");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 30, "A");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 31, "S");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 32, "D");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 33, "F");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 34, "G");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 35, "H");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 36, "J");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 37, "K");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 38, "L");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 39, ";");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 40, "''");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 41, "ENTER");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 29, "Caps lock");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 30, "A");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 31, "S");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 32, "D");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 33, "F");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 34, "G");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 35, "H");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 36, "J");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 37, "K");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 38, "L");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 39, ";");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 40, "'");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 41, "ENTER");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 42, "Shift");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 43, "Z");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 44, "X");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 45, "C");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 46, "V");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 47, "B");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 48, "N");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 49, "M");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 50, ",");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 51, ".");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 52, "/");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 53, "↑");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 54, "Shift");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 42, "Shift");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 43, "Z");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 44, "X");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 45, "C");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 46, "V");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 47, "B");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 48, "N");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 49, "M");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 50, ",");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 51, ".");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 52, "/");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 53, "↑");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 54, "Shift");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 55, "Ctrl");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 56, "Win");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 57, "Alt");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 58, "Space");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 59, "Alt");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 60, "←");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 61, "↓");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 62, "→");
+    })
+    element.addEventListener("mousedown", (e) => {
+      onMouseDown(element, 63, "Ctrl");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 55, "Ctrl");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 56, "Win");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 57, "Alt");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 58, "Space");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 59, "Alt");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 60, "←");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 61, "↓");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 62, "→");
+    })
+    element.addEventListener("mouseup", (e) => {
+      onMouseUp(element, 63, "Ctrl");
+    })
+  })
+}
+
+function onMouseDown(element, buttonNumber, text) {
+  if(element.innerText === text) {    
+    buttons[buttonNumber].classList.add("keyboard__button_active");
+    if(text === "Backspace") {      
+      textArea.value = textArea.value.substring(0, textArea.value.length - 1);
+    }
+    else if((text === "DEL")) {
+      textArea.value = textArea.value.substring(0, textArea.value.length - 1);
+    }
+    else if((text === "Tab")) {
+      textArea.value += "  ";
+    }
+    else if((text === "Caps lock")) {
+      changeCapsLockColorIfActive();      
+    }
+    else if((text === "Space")) {
+      textArea.value += " ";
+    }
+    else {      
+      if(!isCapsLock) {        
+        textArea.value += text.toLowerCase();
+      }
+      else {      
+        textArea.value += text;                  
+      }
+    }         
+  } 
+}
+
+function changeCapsLockColorIfActive() {
+  if(isCapsLock) {
+    isCapsLock = false;
+    buttons[29].style.color = "#a5a5a5";
+  }
+  else{
+    isCapsLock = true;
+    buttons[29].style.color = "green";
+  }
+}
+
+function onMouseUp(element, buttonNumber, text) {
+  if(element.innerText === text){
+    buttons[buttonNumber].classList.remove("keyboard__button_active");      
+  } 
+}
+
+addVirtualKeyboardButtonsClickHandler(); 
+
+//Keep focus on textarea
+
+textArea.addEventListener('focusout', (e) => {
+  textArea.focus();
+})
