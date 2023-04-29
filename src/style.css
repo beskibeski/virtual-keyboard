@@ -88,15 +88,25 @@
   box-shadow: 2px 2px 2px var(--active-shadow-color);    
 }
 
-.keyboard__button_active{
+.keyboard__button-letter_active:hover{
+  color: var(--active-txt-color);
+  transition: all .3s;
+  box-shadow: 2px 2px 2px var(--active-shadow-color);    
+}
+
+.keyboard__button_active {
   background-color: var(--active-bg-color);
   box-shadow: 2px 2px 2px var(--active-shadow-color);
   color: var(--main-bg-color);  
   transition: all .3s;  
 }
 
-.keyboard__button_active:hover{
+.keyboard__button_active:hover {
   background-color: var(--active-bg-color);
   box-shadow: 2px 2px 2px var(--active-shadow-color);
   color: var(--main-bg-color);
+}
+
+.keyboard__button-letter_active {
+  color: var(--active-txt-color);
 }
