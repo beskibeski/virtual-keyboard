@@ -57,6 +57,7 @@ const textArea = document.createElement("textarea");
 textArea.className = "keyboard__text-area";
 document.body.prepend(textArea);
 textArea.setAttribute("rows","5");
+textArea.setAttribute("cols","80");
 const keyboard = document.createElement("div");
 keyboard.className = "keyboard"; 
 document.body.append(keyboard);
@@ -199,7 +200,8 @@ function addPhysicalKeyboardButtonsClickHandler() {
   document.addEventListener('keydown', (event) => {      
     switch(event.code){
       case "Backquote":        
-        makeLetterUpperCaseIfIsCapsLock(event, event.code, 0);        
+        makeLetterUpperCaseIfIsCapsLock(event, event.code, 0);
+        console.log(textArea.value[0]);        
       break;
       case "Digit1":               
         buttons[1].classList.add("keyboard__button_active");        
@@ -606,11 +608,11 @@ function makeLetterUpperCaseIfIsCapsLock(event, key, buttonNumber) {
   buttons[buttonNumber].classList.add("keyboard__button_active");
   event.preventDefault();  
   if(isCapsLock) {      
-    textArea.value += buttons[buttonNumber].innerText; 
+    insertText(buttons[buttonNumber].innerText); 
   }
   else {
     if(event.shiftKey || isShift){
-      textArea.value += buttons[buttonNumber].innerText;
+      insertText(buttons[buttonNumber].innerText);
       if(!event.shiftKey){
         isShift = false;
         buttons[54].classList.remove("keyboard__button-letter_active");
@@ -618,7 +620,7 @@ function makeLetterUpperCaseIfIsCapsLock(event, key, buttonNumber) {
       }    
     }
     else{
-      textArea.value += buttons[buttonNumber].innerText.toLowerCase();
+      insertText(buttons[buttonNumber].innerText.toLowerCase());
       if(!event.shiftKey){
         isShift = false;
         buttons[54].classList.remove("keyboard__button-letter_active");
@@ -628,11 +630,10 @@ function makeLetterUpperCaseIfIsCapsLock(event, key, buttonNumber) {
   }
 }
 
-//TODO right implementation
 function makeNewFunctionalityForTab(event, key, buttonNumber) {
   buttons[buttonNumber].classList.add("keyboard__button_active");
   event.preventDefault();
-  textArea.value += "  "; 
+  textArea.value += "\t"; 
 }
 
 function changeLanguageByButton() {  
@@ -661,6 +662,7 @@ function changeLanguageByButton() {
     for(let i = 0; i < fourthRowById.querySelectorAll(".keyboard__letter").length; i++) {          
       fourthRowById.querySelectorAll(".keyboard__letter")[i].innerText = fourthRowOfSymbols[i];
     }
+    createDesignOfButtons();
   }
 }
 
@@ -879,9 +881,7 @@ function addVirtualKeyboardButtonsClickHandler() {
       onMouseDown(element, 40, "''", "Э");
     })
     element.addEventListener("mousedown", (e) => {
-      if(element.innerText === "ENTER") {        
-        textArea.value += "\n";        
-      }
+      onMouseDown(element, 41, "ENTER");
     })
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 29, "Caps lock");
@@ -976,8 +976,13 @@ function addVirtualKeyboardButtonsClickHandler() {
     })
     element.addEventListener("mousedown", (e) => {
       if(element.innerText === "↑") {
-        if(textArea.selectionStart !== textArea.value.length) {
-          textArea.selectionStart++;
+        if(textArea.selectionStart !== 0) {
+          if(textArea.selectionEnd - 80 < 0) {
+            textArea.selectionEnd = 0;
+          }
+          else {              
+            textArea.selectionEnd -= 80;
+          }
         }
       }
     })
@@ -1038,7 +1043,24 @@ function addVirtualKeyboardButtonsClickHandler() {
     })    
     element.addEventListener("mousedown", (e) => {      
       if(element.innerText === "Ctrl" && element.previousSibling === null) {
-        buttons[55].classList.add("keyboard__button_active");        
+        if(!isControl) {
+          buttons[55].classList.add("keyboard__button-letter_active");
+          isControl = true;
+        }
+        else {
+          if(buttons[55].classList.contains("keyboard__button-letter_active")) {     
+            buttons[55].classList.remove("keyboard__button-letter_active");
+            if(!buttons[63].classList.contains("keyboard__button-letter_active")) {
+              isControl = false;
+            }
+            else {
+              isControl = true;
+            }            
+          }
+          else {
+            buttons[55].classList.add("keyboard__button-letter_active");            
+          }
+        }        
       }
     })
     element.addEventListener("mousedown", (e) => {
@@ -1048,7 +1070,8 @@ function addVirtualKeyboardButtonsClickHandler() {
     })
     element.addEventListener("mousedown", (e) => {
       if(element.innerText === "Alt" && element.nextSibling.innerText === "Space") {
-        buttons[57].classList.add("keyboard__button_active");        
+        buttons[57].classList.add("keyboard__button_active");
+        changeLanguageByButton();     
       }
     })
     element.addEventListener("mousedown", (e) => {
@@ -1056,21 +1079,22 @@ function addVirtualKeyboardButtonsClickHandler() {
     })
     element.addEventListener("mousedown", (e) => {
       if(element.innerText === "Alt" && element.previousSibling.innerText === "Space") {
-        buttons[59].classList.add("keyboard__button_active");        
+        buttons[59].classList.add("keyboard__button_active");
+        changeLanguageByButton();        
       }
     })
     element.addEventListener("mousedown", (e) => {
       if(element.innerText === "←") {
         if(textArea.selectionStart !== 0) {
           textArea.selectionStart--;
-          textArea.selectionEnd--;          
+          textArea.selectionEnd--;      
         }
       }
     })
     element.addEventListener("mousedown", (e) => {     
       if(element.innerText === "↓") {
         if(textArea.selectionStart !== textArea.value.length) {
-          textArea.selectionStart++;
+          textArea.selectionStart += 80;          
         }
       }
     })
@@ -1083,12 +1107,26 @@ function addVirtualKeyboardButtonsClickHandler() {
     })
     element.addEventListener("mousedown", (e) => {      
       if(element.innerText === "Ctrl" && element.nextSibling === null) {
-        buttons[63].classList.add("keyboard__button_active");        
+        if(!isControl) {
+          buttons[63].classList.add("keyboard__button-letter_active");
+          isControl = true;
+        }
+        else {
+          if(buttons[63].classList.contains("keyboard__button-letter_active")) {     
+            buttons[63].classList.remove("keyboard__button-letter_active");
+            if(!buttons[55].classList.contains("keyboard__button-letter_active")) {
+              isControl = false;
+            }
+            else {
+              isControl = true;
+            }            
+          }
+          else {
+            buttons[63].classList.add("keyboard__button-letter_active");            
+          }
+        }         
       }
-    })
-    element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 55, "Ctrl");
-    })
+    })    
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 56, "Win");
     })
@@ -1109,48 +1147,57 @@ function addVirtualKeyboardButtonsClickHandler() {
     })
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 62, "→");
-    })
-    element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 63, "Ctrl");
-    })
+    })    
   })
 }
 
-function onMouseDown(element, buttonNumber, text, textRussian) {
+function insertText(symbol) {
+  lastCursorPosition = textArea.selectionStart;
+  textArea.value = textArea.value.substring(textArea.value[0], textArea.selectionStart) + symbol + textArea.value.substring(textArea.selectionStart, textArea.value[textArea.value.length]);
+  textArea.selectionEnd = ++lastCursorPosition;
+}
+
+function onMouseDown(element, buttonNumber, text, textRussian) {  
+
   element.addEventListener("mouseleave", (e) => {
     onMouseUp(element, buttonNumber, text, textRussian);
     e.stopPropagation();
-  })
+  })  
   if(element.innerText === text || element.innerText === textRussian) {     
     buttons[buttonNumber].classList.add("keyboard__button_active");
     if(text === "Backspace") {      
       textArea.value = textArea.value.substring(0, textArea.value.length - 1);
     }
     else if((text === "DEL")) {
-      textArea.value = textArea.value.substring(0, textArea.value.length - 1);
+      lastCursorPosition = textArea.selectionStart;
+      textArea.value = textArea.value.substring(textArea.value[0], textArea.selectionStart) + textArea.value.substring(textArea.selectionStart + 1, textArea.value[textArea.value.length]);
+      textArea.selectionEnd = lastCursorPosition;
     }
     else if((text === "Tab")) {
-      textArea.value += "  ";
+      insertText("\t");
+    }
+    else if((text === "ENTER")) {
+      insertText("\n");
     }
     else if((text === "Caps lock")) {
       buttons[buttonNumber].classList.remove("keyboard__button_active");
       changeCapsLockColorIfActive();      
     }
     else if((text === "Space")) {
-      textArea.value += " ";
+      insertText(" ");
     }    
     else {      
       if(!isCapsLock && !isShift) {
-        if(isEnglish) {        
-          textArea.value += text.toLowerCase();
+        if(isEnglish) {                 
+          insertText(text.toLowerCase());          
         }
         else {
-          textArea.value += textRussian.toLowerCase();
+          insertText(textRussian.toLowerCase());
         }
       }      
       else {    
         if(isEnglish) { 
-          textArea.value += text;
+          insertText(text);
           if(isShift) {
             isShift = false;
             buttons[54].classList.remove("keyboard__button-letter_active");
@@ -1158,7 +1205,7 @@ function onMouseDown(element, buttonNumber, text, textRussian) {
           }
         }
         else { 
-          textArea.value += textRussian;
+          insertText(textRussian); 
           if(isShift) {
             isShift = false;
             buttons[54].classList.remove("keyboard__button-letter_active");
@@ -1179,17 +1226,17 @@ function onMouseDownAlternative(element, buttonNumber, text, textAlternative) {
     buttons[buttonNumber].classList.add("keyboard__button_active");    
     if(isShift) {
       if(buttonNumber <= 12) {
-        textArea.value += firstRowOfSymbolsForShift[buttonNumber];
+        insertText(firstRowOfSymbolsForShift[buttonNumber]);
       }      
       else {      
-        textArea.value += secondRowOfSymbolsForShift[buttonNumber - firstRowOfSymbolsForShift.length];
+        insertText(secondRowOfSymbolsForShift[buttonNumber - firstRowOfSymbolsForShift.length]);
       }      
       isShift = false;
       buttons[54].classList.remove("keyboard__button-letter_active");
       buttons[42].classList.remove("keyboard__button-letter_active");
     }
     else {
-      textArea.value += text;
+      insertText(text);
       isShift = false;
       buttons[54].classList.remove("keyboard__button-letter_active");
       buttons[42].classList.remove("keyboard__button-letter_active");
