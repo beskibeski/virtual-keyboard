@@ -1,11 +1,34 @@
 //Global constants
 const numberOfKeyboardRows = 5;
+let isEnglish = true;
+let isCapsLock = false;
+let isShift = false;
+let isControl = false;
 
-const firstRowOfSymbols = ["`","1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"];
-const secondRowOfSymbols = ["Tab","Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\", "DEL"];
-const thirdRowOfSymbols = ["Caps lock","A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "ENTER"];
-const fourthRowOfSymbols = ["Shift","Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Up", "Shift"];
-const fifthRowOfSymbols = ["Ctrl","Win", "Alt", "Space", "Alt", "Left", "Down", "Right", "Ctrl"];
+let firstRowOfSymbols = [];
+let secondRowOfSymbols = [];
+let thirdRowOfSymbols = [];
+let fourthRowOfSymbols = [];
+let fifthRowOfSymbols = [];
+
+function changeLanguage() {
+  if(isEnglish) {
+    firstRowOfSymbols = ["`","1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"];
+    secondRowOfSymbols = ["Tab","Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\", "DEL"];
+    thirdRowOfSymbols = ["Caps lock","A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "ENTER"];
+    fourthRowOfSymbols = ["Shift","Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "Up", "Shift"];
+    fifthRowOfSymbols = ["Ctrl","Win", "Alt", "Space", "Alt", "Left", "Down", "Right", "Ctrl"];
+  }
+  else {
+    firstRowOfSymbols = ["Ё","1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Backspace"];
+    secondRowOfSymbols = ["Tab","Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ", "\\", "DEL"];
+    thirdRowOfSymbols = ["Caps lock","Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э", "ENTER"];
+    fourthRowOfSymbols = ["Shift","Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю", "/", "Up", "Shift"];
+    fifthRowOfSymbols = ["Ctrl","Win", "Alt", "Space", "Alt", "Left", "Down", "Right", "Ctrl"];
+  }
+}
+
+changeLanguage(); 
 
 //Create keyboard with textarea and help text
 
@@ -20,10 +43,8 @@ document.body.append(keyboard);
 const helpText = document.createElement("div");
 helpText.className = "keyboard__help-text";
 document.body.append(helpText);
-helpText.innerText = "Windows keyboard. Switch language by Shift + Alt";
+helpText.innerText = "Windows keyboard. Switch language by Ctr + Alt";
 textArea.focus();
-let isCapsLock = false;
-let isShift = false;
 
 //Create keyboard rows
 
@@ -31,6 +52,7 @@ function createKeyboardRows() {
   for(let i = 0; i < numberOfKeyboardRows; i++) {
     const div = document.createElement("div");
     div.className = "keyboard__row";
+    div.id = `${i}`;
     keyboard.append(div);        
   }  
 }
@@ -156,8 +178,8 @@ addPhysicalKeyboardButtonsClickHandler();
 function addPhysicalKeyboardButtonsClickHandler() {     
   document.addEventListener('keydown', (event) => {      
     switch(event.code){
-      case "Backquote":            
-        buttons[0].classList.add("keyboard__button_active");
+      case "Backquote":
+        makeLetterUpperCaseIfIsCapsLock(event, event.code, 0);        
       break;
       case "Digit1":               
         buttons[1].classList.add("keyboard__button_active");
@@ -202,7 +224,7 @@ function addPhysicalKeyboardButtonsClickHandler() {
         makeNewFunctionalityForTab(event, event.code, 14);
       break;
       case "KeyQ":
-        makeLetterUpperCaseIfIsCapsLock(event, event.code, 15);
+        makeLetterUpperCaseIfIsCapsLock(event, event.code, 15);       
       break;
       case "KeyW":
         makeLetterUpperCaseIfIsCapsLock(event, event.code, 16);
@@ -284,6 +306,7 @@ function addPhysicalKeyboardButtonsClickHandler() {
       break;
       case "ShiftLeft":                
         buttons[42].classList.add("keyboard__button-letter_active");
+        isShift = true;
       break;
       case "KeyZ":                
         makeLetterUpperCaseIfIsCapsLock(event, event.code, 43);
@@ -323,14 +346,16 @@ function addPhysicalKeyboardButtonsClickHandler() {
       break;
       case "ControlLeft":                
         buttons[55].classList.add("keyboard__button_active");
+        isControl = true;
       break;
       case "MetaLeft":                
         buttons[56].classList.add("keyboard__button_active");
+        isShift = true;
       break;
-      case "AltLeft":                
+      case "AltLeft":
         buttons[57].classList.add("keyboard__button_active");
         event.preventDefault();
-        textArea.focus();
+        changeLanguageByButton();
       break;
       case "Space":                
         buttons[58].classList.add("keyboard__button_active");
@@ -338,7 +363,7 @@ function addPhysicalKeyboardButtonsClickHandler() {
       case "AltRight":                
         buttons[59].classList.add("keyboard__button_active");
         event.preventDefault();
-        textArea.focus();
+        changeLanguageByButton();
       break;      
       case "ArrowLeft":                
         buttons[60].classList.add("keyboard__button_active");
@@ -351,6 +376,7 @@ function addPhysicalKeyboardButtonsClickHandler() {
       break;
       case "ControlRight":                
         buttons[63].classList.add("keyboard__button_active");
+        isControl = true;
       break;
     }  
   });
@@ -483,6 +509,7 @@ function addPhysicalKeyboardButtonsClickHandler() {
       case "ShiftLeft":                
         buttons[42].classList.remove("keyboard__button-letter_active");
         buttons[54].classList.remove("keyboard__button-letter_active");
+        isShift = false;
       break;
       case "KeyZ":                
         buttons[43].classList.remove("keyboard__button_active");
@@ -519,10 +546,12 @@ function addPhysicalKeyboardButtonsClickHandler() {
       break;
       case "ShiftRight":                        
         buttons[54].classList.remove("keyboard__button-letter_active");
-        buttons[42].classList.remove("keyboard__button-letter_active");        
+        buttons[42].classList.remove("keyboard__button-letter_active");
+        isShift = false;        
       break;
       case "ControlLeft":                
         buttons[55].classList.remove("keyboard__button_active");
+        isControl = false;
       break;
       case "MetaLeft":                
         buttons[56].classList.remove("keyboard__button_active");
@@ -547,6 +576,7 @@ function addPhysicalKeyboardButtonsClickHandler() {
       break;
       case "ControlRight":                
         buttons[63].classList.remove("keyboard__button_active");
+        isControl = false;
       break;
     }  
   });
@@ -554,16 +584,16 @@ function addPhysicalKeyboardButtonsClickHandler() {
 
 function makeLetterUpperCaseIfIsCapsLock(event, key, buttonNumber) {
   buttons[buttonNumber].classList.add("keyboard__button_active");
-  event.preventDefault();
-  if(isCapsLock) {  
-    textArea.value += key[3]; 
+  event.preventDefault();  
+  if(isCapsLock) {      
+    textArea.value += buttons[buttonNumber].innerText; 
   }
   else {
     if(event.shiftKey || isShift){
-      textArea.value += key[3];       
+      textArea.value += buttons[buttonNumber].innerText;       
     }
     else{
-      textArea.value += key[3].toLowerCase();
+      textArea.value += buttons[buttonNumber].innerText.toLowerCase();
     } 
   }
 }
@@ -575,12 +605,41 @@ function makeNewFunctionalityForTab(event, key, buttonNumber) {
   textArea.value += "  "; 
 }
 
+function changeLanguageByButton() {  
+  textArea.focus();
+  if(isControl) {
+    if(isEnglish) {
+      isEnglish = false;
+    }
+    else {
+      isEnglish = true;
+    }
+    changeLanguage();
+    let firstRowById = document.getElementById("0");              
+    for(let i = 0; i < firstRowById.querySelectorAll(".keyboard__letter").length; i++) {          
+      firstRowById.querySelectorAll(".keyboard__letter")[i].innerText = firstRowOfSymbols[i];
+    }
+    let secondRowById = document.getElementById("1");              
+    for(let i = 0; i < secondRowById.querySelectorAll(".keyboard__letter").length; i++) {          
+      secondRowById.querySelectorAll(".keyboard__letter")[i].innerText = secondRowOfSymbols[i];
+    }
+    let thirdRowById = document.getElementById("2");              
+    for(let i = 0; i < thirdRowById.querySelectorAll(".keyboard__letter").length; i++) {          
+      thirdRowById.querySelectorAll(".keyboard__letter")[i].innerText = thirdRowOfSymbols[i];
+    }
+    let fourthRowById = document.getElementById("3");              
+    for(let i = 0; i < fourthRowById.querySelectorAll(".keyboard__letter").length; i++) {          
+      fourthRowById.querySelectorAll(".keyboard__letter")[i].innerText = fourthRowOfSymbols[i];
+    }
+  }
+}
+
 //Create virtual keyboard click handler
 
 function addVirtualKeyboardButtonsClickHandler() { 
   buttons.forEach(element => {    
     element.addEventListener("mousedown", (e) => {      
-      onMouseDown(element, 0, "`");      
+      onMouseDown(element, 0, "`", "Ё");      
     })
     element.addEventListener("mousedown", (e) => {
       onMouseDown(element, 1, "1");
@@ -622,7 +681,7 @@ function addVirtualKeyboardButtonsClickHandler() {
       onMouseDown(element, 13, "Backspace");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 0, "`");      
+      onMouseUp(element, 0, "`", "Ё");      
     })    
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 1, "1");
@@ -667,40 +726,40 @@ function addVirtualKeyboardButtonsClickHandler() {
       onMouseDown(element, 14, "Tab");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 15, "Q");
+      onMouseDown(element, 15, "Q", "Й");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 16, "W");
+      onMouseDown(element, 16, "W", "Ц");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 17, "E");
+      onMouseDown(element, 17, "E", "У");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 18, "R");
+      onMouseDown(element, 18, "R", "К");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 19, "T");
+      onMouseDown(element, 19, "T", "Е");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 20, "Y");
+      onMouseDown(element, 20, "Y", "Н");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 21, "U");
+      onMouseDown(element, 21, "U", "Г");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 22, "I");
+      onMouseDown(element, 22, "I", "Ш");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 23, "O");
+      onMouseDown(element, 23, "O", "Щ");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 24, "P");
+      onMouseDown(element, 24, "P", "З");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 25, "[");
+      onMouseDown(element, 25, "[", "Х");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 26, "]");
+      onMouseDown(element, 26, "]", "Ъ");
     })
     element.addEventListener("mousedown", (e) => {
       onMouseDown(element, 27, "\\");
@@ -712,40 +771,40 @@ function addVirtualKeyboardButtonsClickHandler() {
       onMouseUp(element, 14, "Tab");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 15, "Q");
+      onMouseUp(element, 15, "Q", "Й");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 16, "W");
+      onMouseUp(element, 16, "W", "Ц");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 17, "E");
+      onMouseUp(element, 17, "E", "У");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 18, "R");
+      onMouseUp(element, 18, "R", "К");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 19, "T");
+      onMouseUp(element, 19, "T", "Е");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 20, "Y");
+      onMouseUp(element, 20, "Y", "Н");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 21, "U");
+      onMouseUp(element, 21, "U", "Г");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 22, "I");
+      onMouseUp(element, 22, "I", "Ш");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 23, "O");
+      onMouseUp(element, 23, "O", "Щ");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 24, "P");
+      onMouseUp(element, 24, "P", "З");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 25, "[");
+      onMouseUp(element, 25, "[", "Х");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 26, "]");
+      onMouseUp(element, 26, "]", "Ъ");
     })
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 27, "\\");
@@ -757,37 +816,37 @@ function addVirtualKeyboardButtonsClickHandler() {
       onMouseDown(element, 29, "Caps lock");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 30, "A");
+      onMouseDown(element, 30, "A", "Ф");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 31, "S");
+      onMouseDown(element, 31, "S", "Ы");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 32, "D");
+      onMouseDown(element, 32, "D", "В");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 33, "F");
+      onMouseDown(element, 33, "F", "А");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 34, "G");
+      onMouseDown(element, 34, "G", "П");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 35, "H");
+      onMouseDown(element, 35, "H", "Р");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 36, "J");
+      onMouseDown(element, 36, "J", "О");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 37, "K");
+      onMouseDown(element, 37, "K", "Л");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 38, "L");
+      onMouseDown(element, 38, "L", "Д");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 39, ";");
+      onMouseDown(element, 39, ";", "Ж");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 40, "''");
+      onMouseDown(element, 40, "''", "Э");
     })
     element.addEventListener("mousedown", (e) => {
       onMouseDown(element, 41, "ENTER");
@@ -796,37 +855,37 @@ function addVirtualKeyboardButtonsClickHandler() {
       onMouseUp(element, 29, "Caps lock");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 30, "A");
+      onMouseUp(element, 30, "A", "Ф");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 31, "S");
+      onMouseUp(element, 31, "S", "Ы");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 32, "D");
+      onMouseUp(element, 32, "D", "В");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 33, "F");
+      onMouseUp(element, 33, "F", "А");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 34, "G");
+      onMouseUp(element, 34, "G", "П");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 35, "H");
+      onMouseUp(element, 35, "H", "Р");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 36, "J");
+      onMouseUp(element, 36, "J", "О");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 37, "K");
+      onMouseUp(element, 37, "K", "Л");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 38, "L");
+      onMouseUp(element, 38, "L", "Д");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 39, ";");
+      onMouseUp(element, 39, ";", "Ж");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 40, "'");
+      onMouseUp(element, 40, "'", "Э");
     })
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 41, "ENTER");
@@ -838,37 +897,47 @@ function addVirtualKeyboardButtonsClickHandler() {
           isShift = true;
         }
         else {
-          buttons[42].classList.remove("keyboard__button-letter_active");
-          isShift = false;
+          if(buttons[42].classList.contains("keyboard__button-letter_active")) {     
+            buttons[42].classList.remove("keyboard__button-letter_active");
+            if(!buttons[54].classList.contains("keyboard__button-letter_active")) {
+              isShift = false;
+            }
+            else {
+              isShift = true;
+            }            
+          }
+          else {
+            buttons[42].classList.add("keyboard__button-letter_active");            
+          }
         }        
       }
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 43, "Z");
+      onMouseDown(element, 43, "Z", "Я");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 44, "X");
+      onMouseDown(element, 44, "X", "Ч");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 45, "C");
+      onMouseDown(element, 45, "C", "С");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 46, "V");
+      onMouseDown(element, 46, "V", "М");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 47, "B");
+      onMouseDown(element, 47, "B", "И");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 48, "N");
+      onMouseDown(element, 48, "N", "Т");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 49, "M");
+      onMouseDown(element, 49, "M", "Ь");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 50, ",");
+      onMouseDown(element, 50, ",", "Б");
     })
     element.addEventListener("mousedown", (e) => {
-      onMouseDown(element, 51, ".");
+      onMouseDown(element, 51, ".", "Ю");
     })
     element.addEventListener("mousedown", (e) => {
       onMouseDown(element, 52, "/");
@@ -883,37 +952,47 @@ function addVirtualKeyboardButtonsClickHandler() {
           isShift = true;
         }
         else {
-          buttons[54].classList.remove("keyboard__button-letter_active");
-          isShift = false;
-        }
+          if(buttons[54].classList.contains("keyboard__button-letter_active")) {     
+            buttons[54].classList.remove("keyboard__button-letter_active");
+            if(!buttons[42].classList.contains("keyboard__button-letter_active")) {
+              isShift = false;
+            }
+            else {
+              isShift = true;
+            }            
+          }
+          else {
+            buttons[54].classList.add("keyboard__button-letter_active");            
+          }
+        }        
       }
-    })   
+    })  
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 43, "Z");
+      onMouseUp(element, 43, "Z", "Я");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 44, "X");
+      onMouseUp(element, 44, "X", "Ч");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 45, "C");
+      onMouseUp(element, 45, "C", "С");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 46, "V");
+      onMouseUp(element, 46, "V", "М");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 47, "B");
+      onMouseUp(element, 47, "B", "И");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 48, "N");
+      onMouseUp(element, 48, "N", "Т");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 49, "M");
+      onMouseUp(element, 49, "M", "Ь");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 50, ",");
+      onMouseUp(element, 50, ",", "Б");
     })
     element.addEventListener("mouseup", (e) => {
-      onMouseUp(element, 51, ".");
+      onMouseUp(element, 51, ".", "Ю");
     })
     element.addEventListener("mouseup", (e) => {
       onMouseUp(element, 52, "/");
@@ -986,12 +1065,12 @@ function addVirtualKeyboardButtonsClickHandler() {
   })
 }
 
-function onMouseDown(element, buttonNumber, text) {
+function onMouseDown(element, buttonNumber, text, textRussian) {
   element.addEventListener("mouseleave", (e) => {
-    onMouseUp(element, buttonNumber, text);
+    onMouseUp(element, buttonNumber, text, textRussian);
     e.stopPropagation();
   })
-  if(element.innerText === text) {   
+  if(element.innerText === text || element.innerText === textRussian) {   
     buttons[buttonNumber].classList.add("keyboard__button_active");
     if(text === "Backspace") {      
       textArea.value = textArea.value.substring(0, textArea.value.length - 1);
@@ -1010,11 +1089,21 @@ function onMouseDown(element, buttonNumber, text) {
       textArea.value += " ";
     }    
     else {      
-      if(!isCapsLock && !isShift) {        
-        textArea.value += text.toLowerCase();
+      if(!isCapsLock && !isShift) {
+        if(isEnglish) {        
+          textArea.value += text.toLowerCase();
+        }
+        else {
+          textArea.value += textRussian.toLowerCase();
+        }
       }      
-      else {      
-        textArea.value += text;                  
+      else {    
+        if(isEnglish) { 
+          textArea.value += text;
+        }
+        else { 
+          textArea.value += textRussian;
+        }                  
       }
     }         
   } 
@@ -1031,8 +1120,8 @@ function changeCapsLockColorIfActive() {
   }
 }
 
-function onMouseUp(element, buttonNumber, text) {
-  if(element.innerText === text){
+function onMouseUp(element, buttonNumber, text, textRussian) {
+  if(element.innerText === text || element.innerText === textRussian ){
     buttons[buttonNumber].classList.remove("keyboard__button_active");      
   } 
 }
