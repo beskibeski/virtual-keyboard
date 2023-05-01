@@ -20,14 +20,22 @@
 }
 
 .keyboard {
+  position: relative;
   display: inline-flex;
   flex-direction: column;
   align-items: center;    
 } 
 
+.keyboard__alternative{
+  position: absolute;
+  display: inline-flex;
+  pointer-events: none;
+  margin: auto;
+  top: 0px;  
+}
+
 .keyboard__text-area {
-  display: block;
-  width: 40vw; 
+  display: block;   
   margin-top: 20px;
   margin: auto;
   font-size: var(--letter-size);  
@@ -55,10 +63,25 @@
   box-shadow: 2px 2px 2px var(--main-shadow-color);
 }
 
+.keyboard__button-alt{
+  color: var(--main-txt-color);
+  margin: 5px;
+  min-width: 50px;
+  pointer-events: none;  
+}
+
 .keyboard__letter {
   margin: auto; 
   align-self: center; 
-  font-size: var(--letter-size);   
+  font-size: var(--letter-size);
+  position: relative;  
+}
+
+.keyboard__button-alt-one{
+  position: absolute;
+  color: var(--main-txt-color);
+  left: 790px;
+  top: 65px;    
 }
 
 .keyboard__space_button {
